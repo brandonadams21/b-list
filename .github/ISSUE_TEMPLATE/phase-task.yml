@@ -1,0 +1,39 @@
+name: Phase task
+description: Track an approved B-List development task.
+title: "[Phase ] "
+labels:
+  - phase-task
+body:
+  - type: input
+    id: phase
+    attributes:
+      label: Phase
+      placeholder: "Phase 2 — Project foundation"
+    validations:
+      required: true
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: What outcome should this task deliver?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Approved scope
+      description: Record the exact scope approved by the human developer.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: How will the work be tested or observed?
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks and decisions
+      description: Note security, privacy, hardware, or architecture concerns.
