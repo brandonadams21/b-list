@@ -17,12 +17,12 @@
 - Added mocked protocol and API tests.
 - Added the initial B-List web shell.
 
-**Findings:** Local typechecks, tests, builds, and the localhost API smoke check passed. The approved SSDP discovery session ran through the API and returned zero devices. Because discovery returned no candidates, `/state/device/deviceinfo` was not called. The TV was not paired and no control endpoint was used.
+**Findings:** Local typechecks, tests, builds, and the localhost API smoke check passed. The initial and repeat approved SSDP discovery sessions ran through the API and returned zero devices. The repeat session returned `{"devices":[]}`; because discovery returned no candidates, `/state/device/deviceinfo` was not called. The TV was not paired and no control endpoint was used.
 
-**Decisions required:** Whether to proceed to Phase 3 pairing and TV control, and whether to repeat the read-only hardware check when the TV is reachable on the same LAN.
+**Decisions required:** Whether the TV is confirmed to be reachable on the same LAN for another read-only check, and whether to proceed to Phase 3 pairing and TV control.
 
 **Risks:** The VIZIO SmartCast API is reverse-engineered, firmware-dependent, and uses a self-signed HTTPS certificate. No authentication token is stored or sent by Phase 2.
 
-**Next action:** Review the Phase 2 results. If approved, define the exact pairing flow and restricted command set for Phase 3.
+**Next action:** Review the Phase 2 results. The hardware check remains blocked because no TV was discovered. If Phase 3 is approved, define the exact pairing flow and restricted command set before any pairing request.
 
 **Approval requested:** Approval to begin Phase 3 is not yet granted. Pairing and control remain disabled.
