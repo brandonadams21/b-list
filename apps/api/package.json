@@ -1,0 +1,17 @@
+{
+  "name": "@b-list/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@b-list/contracts": "workspace:*",
+    "@b-list/tv-vizio": "workspace:*",
+    "fastify": "^5.2.1"
+  }
+}
