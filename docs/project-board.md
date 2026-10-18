@@ -4,10 +4,11 @@ This file defines the source-of-truth configuration for the hosted GitHub Projec
 
 ## Project
 
-- **Name:** B-List Development
-- **Type:** Repository project
+- **Name:** b-list tracker
+- **Type:** User-owned GitHub Project, linked to the repository
 - **Primary view:** Board
 - **Repository:** `brandonadams21/b-list`
+- **Project URL:** <https://github.com/users/brandonadams21/projects/6>
 
 ## Status columns
 
@@ -20,22 +21,22 @@ This file defines the source-of-truth configuration for the hosted GitHub Projec
 
 ## Fields
 
-- **Phase:** 1 Research, 2 Foundation, 3 Pairing and control, 4 Recommendation backend, 5 Mobile interface, 6 TV interface, 7 Playback and personalization
-- **Priority:** P0 Critical, P1 High, P2 Normal, P3 Later
+- **Phase:** Phase 1 Research, Phase 2 Foundation, Phase 3 Pairing and control, Phase 4 Recommendation backend, Phase 5 Mobile interface, Phase 6 TV interface, Phase 7 Playback and personalization
+- **Priority:** P0, P1, P2
 - **Area:** Architecture, TV integration, Backend, Web, Data, Security, Documentation
 - **Hardware access:** Not needed, Read-only approved, Pairing approved, Control approved
 
 ## Initial cards
 
-| Status | Phase | Card | Area | Hardware access |
-| --- | --- | --- | --- | --- |
-| Done | 2 | Monorepo foundation and local tooling | Architecture | Not needed |
-| Done | 2 | Typed VIZIO SSDP discovery and device-info client | TV integration | Read-only approved |
-| Done | 2 | Mocked protocol, API, typecheck, and build tests | Security | Not needed |
-| Blocked | 2 | Repeat hardware discovery when the TV is reachable on the same LAN | TV integration | Read-only approved |
-| Backlog | 3 | Define and review exact pairing protocol | Security | Pairing approved |
-| Backlog | 3 | Implement secure token storage and user-confirmed controls | TV integration | Control approved |
-| Backlog | 4 | Design recommendation data model and TMDB boundary | Backend | Not needed |
+| Status | Issue | Phase | Card | Area | Hardware access |
+| --- | --- | --- | --- | --- | --- |
+| Done | [#7](https://github.com/brandonadams21/b-list/issues/7) | Phase 2 Foundation | Monorepo foundation and local tooling | Architecture | Not needed |
+| Done | [#4](https://github.com/brandonadams21/b-list/issues/4) | Phase 2 Foundation | Typed VIZIO SSDP discovery and device-info client | TV integration | Read-only approved |
+| Done | [#5](https://github.com/brandonadams21/b-list/issues/5) | Phase 2 Foundation | Mocked protocol, API, typecheck, and build tests | Security | Not needed |
+| Blocked | [#1](https://github.com/brandonadams21/b-list/issues/1) | Phase 2 Foundation | Repeat hardware discovery when the TV is reachable on the same LAN | TV integration | Read-only approved |
+| Backlog | [#6](https://github.com/brandonadams21/b-list/issues/6) | Phase 3 Pairing and control | Define and review exact pairing protocol | Security | Pairing approved |
+| Backlog | [#2](https://github.com/brandonadams21/b-list/issues/2) | Phase 3 Pairing and control | Implement secure token storage and user-confirmed controls | TV integration | Control approved |
+| Backlog | [#3](https://github.com/brandonadams21/b-list/issues/3) | Phase 4 Recommendation backend | Design recommendation data model and TMDB boundary | Backend | Not needed |
 
 ## Operating rule
 
