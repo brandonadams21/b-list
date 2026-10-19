@@ -38,3 +38,15 @@
 **Current recommendation:** Use the two-step `/pairing/start` and `/pairing/pair` PIN flow, store the resulting token only in a platform credential store, send it only as the literal `AUTH` header, and begin with one-at-a-time user-confirmed commands. Defer cancellation, re-pairing, settings writes, app launching, playback, and wake behavior until separately verified.
 
 **Approval requested:** Review the Phase 3 proposal and approve or revise the TLS strategy, stable device identity, token lifecycle, and command allowlist before implementation or any live pairing request.
+
+### Phase 3 implementation checkpoint
+
+**Status:** Mock-only implementation complete — awaiting live pairing approval
+
+**Completed:** Added typed `/pairing/start` and `/pairing/pair` request/response handling, stable device/session checks, PIN validation, a token-store interface, an in-memory test double, an `AUTH`-header control client, and a one-command-at-a-time confirmation-gated key-command allowlist.
+
+**Validation:** Full workspace typecheck, tests, and build passed. The VIZIO package has 9 passing tests. All tests use injected mocks; no TV request was sent.
+
+**Not implemented:** Platform credential-store adapter, device-scoped TLS trust, API/UI wiring, live pairing, authenticated reads, and live control. The in-memory token store is explicitly test-only.
+
+**Approval requested:** Review the implementation and explicitly approve the first live pairing attempt. That approval must identify the selected device and confirm that the TV may display a pairing PIN. Control requests remain separately gated.

@@ -24,6 +24,29 @@ const VizioApiResponseSchema = z
   })
   .passthrough();
 
+const PairingStartResponseSchema = z
+  .object({
+    STATUS: z
+      .object({ RESULT: z.string().optional(), DETAIL: z.string().optional() })
+      .passthrough()
+      .optional(),
+    ITEM: z.object({
+      PAIRING_REQ_TOKEN: z.union([z.string().min(1), z.number().int()]),
+      CHALLENGE_TYPE: z.number().int(),
+    }),
+  })
+  .passthrough();
+
+const PairingCompleteResponseSchema = z
+  .object({
+    STATUS: z
+      .object({ RESULT: z.string().optional(), DETAIL: z.string().optional() })
+      .passthrough()
+      .optional(),
+    ITEM: z.object({ AUTH_TOKEN: z.string().min(1) }),
+  })
+  .passthrough();
+
 export function buildSsdpRequest(): Buffer {
   return Buffer.from(
     [
@@ -64,6 +87,34 @@ export function parseSsdpResponse(message: string): VizioDiscoveryCandidate | nu
 
 export function parseVizioApiResponse(value: unknown): VizioApiResponse {
   return VizioApiResponseSchema.parse(value);
+}
+
+export interface VizioPairingChallenge {
+  pairingRequestToken: string | number;
+  challengeType: number;
+}
+
+export function parsePairingStartResponse(value: unknown): VizioPairingChallenge {
+  const response = PairingStartResponseSchema.parse(value);
+  assertVizioSuccess(response, "pairing start");
+  return {
+    pairingRequestToken: response.ITEM.PAIRING_REQ_TOKEN,
+    challengeType: response.ITEM.CHALLENGE_TYPE,
+  };
+}
+
+export function parsePairingCompleteResponse(value: unknown): string {
+  const response = PairingCompleteResponseSchema.parse(value);
+  assertVizioSuccess(response, "pairing completion");
+  return response.ITEM.AUTH_TOKEN;
+}
+
+export function assertVizioSuccess(value: VizioApiResponse, operation: string): void {
+  const result = value.STATUS?.RESULT?.toUpperCase();
+  if (result !== "SUCCESS") {
+    const detail = value.STATUS?.DETAIL ? `: ${value.STATUS.DETAIL}` : "";
+    throw new Error(`VIZIO ${operation} failed with result ${result ?? "UNKNOWN"}${detail}`);
+  }
 }
 
 function findValue(value: unknown, keys: Set<string>): string | undefined {

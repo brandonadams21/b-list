@@ -12,7 +12,7 @@ export class VizioReadOnlyClient {
 
   constructor(options: VizioReadOnlyClientOptions) {
     this.baseUrl = new URL(options.baseUrl).toString().replace(/\/$/, "");
-    this.transport = options.transport ?? new FetchTransport(this.baseUrl);
+    this.transport = options.transport ?? new VizioFetchTransport(this.baseUrl);
   }
 
   static fromDiscovery(candidate: VizioDiscoveryCandidate, transport?: VizioHttpTransport): VizioReadOnlyClient {
@@ -24,13 +24,23 @@ export class VizioReadOnlyClient {
   }
 }
 
-class FetchTransport implements VizioHttpTransport {
+export class VizioFetchTransport implements VizioHttpTransport {
   constructor(private readonly baseUrl: string) {}
 
-  async get(path: string): Promise<unknown> {
+  async get(path: string, headers: Record<string, string> = {}): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}${path}`, {
       method: "GET",
-      headers: { Accept: "application/json" },
+      headers: { Accept: "application/json", ...headers },
+    });
+    if (!response.ok) throw new Error(`VIZIO request failed with HTTP ${response.status}`);
+    return response.json();
+  }
+
+  async put(path: string, body: unknown, headers: Record<string, string> = {}): Promise<unknown> {
+    const response = await fetch(`${this.baseUrl}${path}`, {
+      method: "PUT",
+      headers: { Accept: "application/json", "Content-Type": "application/json", ...headers },
+      body: JSON.stringify(body),
     });
     if (!response.ok) throw new Error(`VIZIO request failed with HTTP ${response.status}`);
     return response.json();

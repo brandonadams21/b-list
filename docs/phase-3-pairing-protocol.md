@@ -1,8 +1,8 @@
 # Phase 3 pairing and control protocol
 
-**Status:** Proposal for review — planning only
+**Status:** Mock implementation complete — live pairing and control still gated
 
-This document defines the proposed pairing and control boundary for B-List. It does not authorize pairing, token creation, or control requests. Those actions require a separate approval after this proposal is reviewed.
+This document defines the pairing and control boundary for B-List. The mock implementation is validated without contacting a TV. It does not authorize live pairing, token creation on a TV, or control requests; those actions require a separate approval.
 
 ## Evidence and constraints
 
@@ -158,4 +158,4 @@ All failures must redact the PIN, pairing token, and auth token.
 - [ ] Approve the exact control codes and exclude all unlisted endpoints.
 - [ ] Approve mocked tests before any live pairing attempt.
 
-Until every required item is reviewed and approved, B-List remains read-only.
+Until every required item is reviewed and approved, B-List remains read-only against real devices.
