@@ -26,3 +26,15 @@
 **Next action:** Review the Phase 2 results. The hardware check remains blocked because no TV was discovered. If Phase 3 is approved, define the exact pairing flow and restricted command set before any pairing request.
 
 **Approval requested:** Approval to begin Phase 3 is not yet granted. Pairing and control remain disabled.
+
+### Phase 3 planning checkpoint
+
+**Status:** Proposal drafted — awaiting review
+
+**Approved scope:** Research and document the pairing handshake, token lifecycle, TLS decision, failure handling, and the smallest authenticated command allowlist. No pairing or control requests are authorized by this planning approval.
+
+**Deliverable:** `docs/phase-3-pairing-protocol.md`
+
+**Current recommendation:** Use the two-step `/pairing/start` and `/pairing/pair` PIN flow, store the resulting token only in a platform credential store, send it only as the literal `AUTH` header, and begin with one-at-a-time user-confirmed commands. Defer cancellation, re-pairing, settings writes, app launching, playback, and wake behavior until separately verified.
+
+**Approval requested:** Review the Phase 3 proposal and approve or revise the TLS strategy, stable device identity, token lifecycle, and command allowlist before implementation or any live pairing request.
