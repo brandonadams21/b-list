@@ -3,4 +3,5 @@ export * from "./control.js";
 export * from "./discovery.js";
 export * from "./pairing.js";
 export * from "./protocol.js";
+export * from "./security.js";
 export * from "./types.js";

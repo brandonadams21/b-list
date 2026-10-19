@@ -33,4 +33,33 @@ describe("API server", () => {
 
     await app.close();
   });
+
+  it("routes movie search through the provider boundary", async () => {
+    const app = buildServer({
+      movieProvider: {
+        name: "fixture",
+        search: async (query, limit) => [
+          { id: "dune-2021", title: query === "dune" ? "Dune" : "Other", genres: ["Sci-Fi"] },
+        ].slice(0, limit),
+      },
+    });
+
+    const response = await app.inject({ method: "GET", url: "/api/movies/search?query=dune&limit=1" });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual({
+      query: "dune",
+      provider: "fixture",
+      results: [{ id: "dune-2021", title: "Dune", genres: ["Sci-Fi"] }],
+    });
+    await app.close();
+  });
+
+  it("rejects an empty movie search query", async () => {
+    const app = buildServer();
+    const response = await app.inject({ method: "GET", url: "/api/movies/search?query=" });
+
+    expect(response.statusCode).toBe(400);
+    await app.close();
+  });
 });

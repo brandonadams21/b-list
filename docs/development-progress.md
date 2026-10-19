@@ -50,3 +50,11 @@
 **Not implemented:** Platform credential-store adapter, device-scoped TLS trust, API/UI wiring, live pairing, authenticated reads, and live control. The in-memory token store is explicitly test-only.
 
 **Approval requested:** Review the implementation and explicitly approve the first live pairing attempt. That approval must identify the selected device and confirm that the TV may display a pairing PIN. Control requests remain separately gated.
+
+### Phase 4 offline checkpoint
+
+**Status:** Recommendation boundary complete — provider integration deferred
+
+**Completed:** Added shared movie-search contracts, an injectable `MovieProvider` boundary, an in-memory provider for local development/tests, and `GET /api/movies/search` validation with API coverage.
+
+**Constraint:** No external movie provider call is made. TMDB credentials, attribution details, rate limits, caching, and provider selection remain a separate implementation decision.
