@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsx watch src/index.ts",
-    "pretest": "pnpm --filter @b-list/contracts build",
+    "pretest": "pnpm --filter @b-list/contracts build && pnpm --filter @b-list/tv-vizio build",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },

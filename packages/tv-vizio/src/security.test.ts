@@ -4,6 +4,7 @@ import {
   MacOsKeychainVizioTokenStore,
   normalizeSha256Fingerprint,
 } from "./security.js";
+import { VizioFetchTransport } from "./client.js";
 
 describe("VIZIO security plumbing", () => {
   it("normalizes and validates certificate fingerprints", () => {
@@ -37,5 +38,28 @@ describe("VIZIO security plumbing", () => {
       ["find-generic-password", "-a", "device-id", "-s", "test-service", "-w"],
       ["delete-generic-password", "-a", "device-id", "-s", "test-service"],
     ]);
+  });
+
+  it("fails closed when pinned TLS has no peer-certificate verifier", async () => {
+    const transport = new VizioFetchTransport("https://fake.invalid:7345", {
+      tlsPolicy: { mode: "pinned", sha256: "AA".repeat(32) },
+    });
+
+    await expect(transport.get("/state/device/deviceinfo")).rejects.toThrow(
+      "requires a peer certificate fingerprint verifier",
+    );
+  });
+
+  it("checks the configured fingerprint before a pinned request", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({}) });
+    vi.stubGlobal("fetch", fetchMock);
+    const transport = new VizioFetchTransport("https://fake.invalid:7345", {
+      tlsPolicy: { mode: "pinned", sha256: "AA".repeat(32) },
+      peerCertificateFingerprint: async () => "AA".repeat(32),
+    });
+
+    await transport.get("/state/device/deviceinfo");
+    expect(fetchMock).toHaveBeenCalledOnce();
+    vi.unstubAllGlobals();
   });
 });

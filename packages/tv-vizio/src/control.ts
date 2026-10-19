@@ -13,6 +13,7 @@ const ALLOWED_KEY_COMMANDS = {
 } as const;
 
 export type VizioAllowedKeyCommand = keyof typeof ALLOWED_KEY_COMMANDS;
+export const VIZIO_ALLOWED_KEY_COMMANDS = Object.keys(ALLOWED_KEY_COMMANDS) as VizioAllowedKeyCommand[];
 
 export function buildAllowedKeyPress(command: VizioAllowedKeyCommand): {
   KEYLIST: Array<{ CODESET: number; CODE: number; ACTION: "KEYPRESS" }>;

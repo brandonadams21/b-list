@@ -33,7 +33,7 @@ const PairingStartResponseSchema = z
     ITEM: z.object({
       PAIRING_REQ_TOKEN: z.union([z.string().min(1), z.number().int()]),
       CHALLENGE_TYPE: z.number().int(),
-    }),
+    }).optional(),
   })
   .passthrough();
 
@@ -43,7 +43,7 @@ const PairingCompleteResponseSchema = z
       .object({ RESULT: z.string().optional(), DETAIL: z.string().optional() })
       .passthrough()
       .optional(),
-    ITEM: z.object({ AUTH_TOKEN: z.string().min(1) }),
+    ITEM: z.object({ AUTH_TOKEN: z.string().min(1) }).optional(),
   })
   .passthrough();
 
@@ -97,6 +97,7 @@ export interface VizioPairingChallenge {
 export function parsePairingStartResponse(value: unknown): VizioPairingChallenge {
   const response = PairingStartResponseSchema.parse(value);
   assertVizioSuccess(response, "pairing start");
+  if (!response.ITEM) throw new Error("VIZIO pairing start response did not include a challenge");
   return {
     pairingRequestToken: response.ITEM.PAIRING_REQ_TOKEN,
     challengeType: response.ITEM.CHALLENGE_TYPE,
@@ -106,6 +107,7 @@ export function parsePairingStartResponse(value: unknown): VizioPairingChallenge
 export function parsePairingCompleteResponse(value: unknown): string {
   const response = PairingCompleteResponseSchema.parse(value);
   assertVizioSuccess(response, "pairing completion");
+  if (!response.ITEM) throw new Error("VIZIO pairing completion response did not include an auth token");
   return response.ITEM.AUTH_TOKEN;
 }
 

@@ -3,6 +3,7 @@ import {
   parsePairingStartResponse,
   type VizioPairingChallenge,
 } from "./protocol.js";
+import type { VizioTlsPolicy } from "./security.js";
 import {
   VIZIO_PAIRING_PAIR_PATH,
   VIZIO_PAIRING_START_PATH,
@@ -16,6 +17,8 @@ export interface VizioPairingClientOptions {
   deviceId: string;
   deviceName: string;
   transport?: VizioHttpTransport;
+  tlsPolicy?: VizioTlsPolicy;
+  peerCertificateFingerprint?: () => Promise<string>;
 }
 
 export interface VizioPairingSession extends VizioPairingChallenge {
@@ -35,7 +38,12 @@ export class VizioPairingClient {
     const baseUrl = new URL(options.baseUrl).toString().replace(/\/$/, "");
     this.deviceId = options.deviceId;
     this.deviceName = options.deviceName;
-    this.transport = options.transport ?? new VizioFetchTransport(baseUrl);
+    this.transport =
+      options.transport ??
+      new VizioFetchTransport(baseUrl, {
+        tlsPolicy: options.tlsPolicy,
+        peerCertificateFingerprint: options.peerCertificateFingerprint,
+      });
   }
 
   async start(): Promise<VizioPairingSession> {

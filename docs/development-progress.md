@@ -41,20 +41,28 @@
 
 ### Phase 3 implementation checkpoint
 
-**Status:** Mock-only implementation complete — awaiting live pairing approval
+**Status:** Offline implementation complete — awaiting live pairing approval
 
-**Completed:** Added typed `/pairing/start` and `/pairing/pair` request/response handling, stable device/session checks, PIN validation, a token-store interface, an in-memory test double, an `AUTH`-header control client, and a one-command-at-a-time confirmation-gated key-command allowlist.
+**Completed:** Added typed `/pairing/start` and `/pairing/pair` request/response handling, stable device/session checks, PIN validation, a platform Keychain adapter, a pairing manager that adopts tokens into an injected store, an in-memory test double, an `AUTH`-header control client, and a one-command-at-a-time confirmation-gated key-command allowlist. Added an explicit TLS policy boundary that fails closed when pinned verification is not available. Added a fake VIZIO device and API/UI dry-run flow for pairing and controls.
 
-**Validation:** Full workspace typecheck, tests, and build passed. The VIZIO package has 9 passing tests. All tests use injected mocks; no TV request was sent.
+**Validation:** Full workspace typecheck, 22 tests, and build passed. All integration tests use injected transports or the fake device; no TV request was sent. CI now repeats the same checks on pushes and pull requests.
 
-**Not implemented:** Platform credential-store adapter, device-scoped TLS trust, API/UI wiring, live pairing, authenticated reads, and live control. The in-memory token store is explicitly test-only.
+**Not implemented:** A live peer-certificate source for Node fetch, live pairing, authenticated reads, and live control. The dry-run API uses an in-memory token store explicitly; production pairing is designed to use the macOS Keychain adapter.
 
-**Approval requested:** Review the implementation and explicitly approve the first live pairing attempt. That approval must identify the selected device and confirm that the TV may display a pairing PIN. Control requests remain separately gated.
+**Approval requested:** Review the offline implementation and explicitly approve the first live pairing attempt. That approval must identify the selected device and confirm that the TV may display a pairing PIN. Control requests remain separately gated.
 
 ### Phase 4 offline checkpoint
 
 **Status:** Recommendation boundary complete — provider integration deferred
 
-**Completed:** Added shared movie-search contracts, an injectable `MovieProvider` boundary, an in-memory provider for local development/tests, and `GET /api/movies/search` validation with API coverage.
+**Completed:** Added shared movie-search contracts, an injectable `MovieProvider` boundary, an in-memory provider with local fixtures, `GET /api/movies/search` validation with API coverage, and a small web search surface.
 
 **Constraint:** No external movie provider call is made. TMDB credentials, attribution details, rate limits, caching, and provider selection remain a separate implementation decision.
+
+### Offline completion checkpoint
+
+**Status:** Complete — final hardware gate remains
+
+**Completed:** Added the fake-TV contract simulator, dry-run pairing and command routes, UI confirmation states, explicit TLS fail-closed tests, protocol failure coverage, a reproducible offline validation guide, and GitHub Actions CI.
+
+**Remaining:** Power on the target TV, verify same-LAN discovery, then separately approve and perform live pairing. No device-dependent work is being treated as complete until that check is observed.
