@@ -17,7 +17,7 @@
 - Added mocked protocol and API tests.
 - Added the initial B-List web shell.
 
-**Findings:** Local typechecks, tests, builds, and the localhost API smoke check passed. The initial and repeat approved SSDP discovery sessions ran through the API and returned zero devices. The repeat session returned `{"devices":[]}`; because discovery returned no candidates, `/state/device/deviceinfo` was not called. The TV was not paired and no control endpoint was used.
+**Findings:** Local typechecks, tests, builds, and the localhost API smoke check passed. The initial, repeat, and latest approved SSDP discovery sessions ran through the API and returned zero devices. The latest check on 2026-10-18 returned `{"devices":[]}`; because discovery returned no candidates, `/state/device/deviceinfo` was not called. The TV was not paired and no control endpoint was used.
 
 **Decisions required:** Whether the TV is confirmed to be reachable on the same LAN for another read-only check, and whether to proceed to Phase 3 pairing and TV control.
 
