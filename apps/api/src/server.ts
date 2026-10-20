@@ -6,18 +6,23 @@ import {
 import {
   FakeVizioDevice,
   InMemoryVizioTokenStore,
+  MacOsKeychainVizioTokenStore,
   VizioControlClient,
+  VizioAuthenticatedReadClient,
   VizioPairingManager,
   VIZIO_ALLOWED_KEY_COMMANDS,
   discoverVizioDevices,
   VizioReadOnlyClient,
   type VizioDiscoveryCandidate,
+  type VizioTokenStore,
 } from "@b-list/tv-vizio";
 import { InMemoryMovieProvider, type MovieProvider } from "./movies.js";
 
 export interface ApiDependencies {
   discover?: () => Promise<VizioDiscoveryCandidate[]>;
   createClient?: (candidate: VizioDiscoveryCandidate) => VizioReadOnlyClient;
+  createAuthenticatedClient?: (candidate: VizioDiscoveryCandidate) => Pick<VizioAuthenticatedReadClient, "getDeviceInfo">;
+  tokenStore?: VizioTokenStore;
   movieProvider?: MovieProvider;
   dryRunDevice?: FakeVizioDevice;
 }
@@ -31,6 +36,15 @@ export function buildServer(dependencies: ApiDependencies = {}): FastifyInstance
     dependencies.createClient ??
     ((candidate: VizioDiscoveryCandidate) =>
       new VizioReadOnlyClient({ baseUrl: candidate.location }));
+  const tokenStore = dependencies.tokenStore ?? new MacOsKeychainVizioTokenStore();
+  const createAuthenticatedClient =
+    dependencies.createAuthenticatedClient ??
+    ((candidate: VizioDiscoveryCandidate) =>
+      new VizioAuthenticatedReadClient({
+        baseUrl: candidate.location,
+        deviceId: candidate.id,
+        tokenStore,
+      }));
   const movieProvider =
     dependencies.movieProvider ??
     new InMemoryMovieProvider([
@@ -137,6 +151,19 @@ export function buildServer(dependencies: ApiDependencies = {}): FastifyInstance
       }
 
       const info = await createClient(candidate).getDeviceInfo();
+      return { device: info };
+    },
+  );
+
+  app.get<{ Params: { deviceId: string } }>(
+    "/api/tv/devices/:deviceId/authenticated-info",
+    async (request, reply) => {
+      const candidate = discovered.get(request.params.deviceId);
+      if (!candidate) {
+        return reply.code(404).send({ error: "Device was not discovered in this session." });
+      }
+
+      const info = await createAuthenticatedClient(candidate).getDeviceInfo();
       return { device: info };
     },
   );

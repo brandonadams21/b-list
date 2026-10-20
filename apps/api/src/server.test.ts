@@ -35,6 +35,32 @@ describe("API server", () => {
     await app.close();
   });
 
+  it("keeps authenticated read-only info behind discovery and token plumbing", async () => {
+    const app = buildServer({
+      discover: async () => [
+        { id: "uuid:sample-tv", location: "https://192.168.1.50:7345", usn: "uuid:sample-tv" },
+      ],
+      createAuthenticatedClient: () => ({
+        getDeviceInfo: async () => ({ model: "TEST-1", name: "Fixture TV", raw: { STATUS: { RESULT: "SUCCESS" } } }),
+      }),
+    });
+
+    const beforeDiscovery = await app.inject({
+      method: "GET",
+      url: "/api/tv/devices/uuid:sample-tv/authenticated-info",
+    });
+    expect(beforeDiscovery.statusCode).toBe(404);
+
+    await app.inject({ method: "GET", url: "/api/tv/discover" });
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/tv/devices/uuid:sample-tv/authenticated-info",
+    });
+    expect(response.statusCode).toBe(200);
+    expect(response.json().device).toMatchObject({ model: "TEST-1", name: "Fixture TV" });
+    await app.close();
+  });
+
   it("routes movie search through the provider boundary", async () => {
     const app = buildServer({
       movieProvider: {

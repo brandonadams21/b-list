@@ -59,6 +59,16 @@
 
 **Remaining:** Read the PIN from the TV display, then separately approve submitting that PIN to `/pairing/pair`. No authenticated control command has been sent.
 
+### Manual pairing and Keychain checkpoint
+
+**Status:** Paired manually — authenticated read-only client wired
+
+**Observed:** The user completed pairing manually and verified the device-scoped token exists in macOS Keychain under the B-List service. The token is not recorded in the repository or project tracker.
+
+**Completed:** Added the Keychain-backed authenticated read-only client, an API route protected by prior discovery, and tests proving the token is retrieved from the store and sent only as the `AUTH` header. Control commands remain separately gated.
+
+**Remaining:** Perform the one live device-info read from the user’s normal Terminal session. The Codex shell cannot access the user’s unlocked login Keychain, so it cannot perform that final read itself.
+
 ### Phase 4 offline checkpoint
 
 **Status:** Recommendation boundary complete — provider integration deferred

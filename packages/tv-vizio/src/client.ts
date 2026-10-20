@@ -2,7 +2,13 @@ import {
   assertVizioCertificateFingerprint,
   type VizioTlsPolicy,
 } from "./security.js";
-import { VIZIO_DEVICE_INFO_PATH, type VizioDeviceInfo, type VizioDiscoveryCandidate, type VizioHttpTransport } from "./types.js";
+import {
+  VIZIO_DEVICE_INFO_PATH,
+  type VizioDeviceInfo,
+  type VizioDiscoveryCandidate,
+  type VizioHttpTransport,
+  type VizioTokenStore,
+} from "./types.js";
 import { parseDeviceInfo } from "./protocol.js";
 
 export interface VizioReadOnlyClientOptions {
@@ -13,8 +19,8 @@ export interface VizioReadOnlyClientOptions {
 }
 
 export class VizioReadOnlyClient {
-  private readonly baseUrl: string;
-  private readonly transport: VizioHttpTransport;
+  protected readonly baseUrl: string;
+  protected readonly transport: VizioHttpTransport;
 
   constructor(options: VizioReadOnlyClientOptions) {
     this.baseUrl = new URL(options.baseUrl).toString().replace(/\/$/, "");
@@ -32,6 +38,30 @@ export class VizioReadOnlyClient {
 
   async getDeviceInfo(): Promise<VizioDeviceInfo> {
     return parseDeviceInfo(await this.transport.get(VIZIO_DEVICE_INFO_PATH));
+  }
+}
+
+export interface VizioAuthenticatedReadClientOptions extends VizioReadOnlyClientOptions {
+  deviceId: string;
+  tokenStore: VizioTokenStore;
+}
+
+/** Read-only client that retrieves the device-scoped AUTH token without exposing it to callers. */
+export class VizioAuthenticatedReadClient extends VizioReadOnlyClient {
+  private readonly deviceId: string;
+  private readonly tokenStore: VizioTokenStore;
+
+  constructor(options: VizioAuthenticatedReadClientOptions) {
+    super(options);
+    if (!options.deviceId.trim()) throw new Error("Authenticated VIZIO reads require a device ID");
+    this.deviceId = options.deviceId;
+    this.tokenStore = options.tokenStore;
+  }
+
+  override async getDeviceInfo(): Promise<VizioDeviceInfo> {
+    const token = await this.tokenStore.get(this.deviceId);
+    if (!token) throw new Error("No VIZIO auth token is stored for this device");
+    return parseDeviceInfo(await this.transport.get(VIZIO_DEVICE_INFO_PATH, { AUTH: token }));
   }
 }
 
