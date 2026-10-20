@@ -133,7 +133,7 @@ export function parseDeviceInfo(value: unknown): VizioDeviceInfo {
   const raw = parseVizioApiResponse(value);
   return {
     model: findValue(raw, new Set(["MODEL_NAME", "MODEL"])),
-    name: findValue(raw, new Set(["DEVICE_NAME", "NAME"])),
+    name: findValue(raw, new Set(["DEVICE_NAME", "CAST_NAME", "NAME"])),
     serialNumber: findValue(raw, new Set(["SERIAL_NUMBER", "SERIAL"])),
     raw,
   };

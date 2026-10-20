@@ -46,4 +46,13 @@ describe("VIZIO protocol parsing", () => {
     expect(info.name).toBe("B-List TV");
     expect(info.serialNumber).toBe("redacted-fixture");
   });
+
+  it("recognizes the CAST_NAME field returned by current VIZIO firmware", () => {
+    const info = parseDeviceInfo({
+      STATUS: { RESULT: "SUCCESS" },
+      ITEMS: [{ VALUE: { MODEL_NAME: "W4K65M-1030", CAST_NAME: "Living Room" } }],
+    });
+
+    expect(info.name).toBe("Living Room");
+  });
 });

@@ -41,33 +41,33 @@
 
 ### Phase 3 implementation checkpoint
 
-**Status:** Offline implementation complete — awaiting live pairing approval
+**Status:** Authenticated read-only integration verified — live control remains gated
 
 **Completed:** Added typed `/pairing/start` and `/pairing/pair` request/response handling, stable device/session checks, PIN validation, a platform Keychain adapter, a pairing manager that adopts tokens into an injected store, an in-memory test double, an `AUTH`-header control client, and a one-command-at-a-time confirmation-gated key-command allowlist. Added an explicit TLS policy boundary that fails closed when pinned verification is not available. Added a fake VIZIO device and API/UI dry-run flow for pairing and controls.
 
-**Validation:** Full workspace typecheck, 22 tests, and build passed. All integration tests use injected transports or the fake device; no TV request was sent. CI now repeats the same checks on pushes and pull requests.
+**Validation:** Full workspace typecheck, 24 tests, and build passed. The user completed one authenticated read-only device-info request manually; no control request was sent. CI repeats the automated checks on pushes and pull requests.
 
-**Not implemented:** A live peer-certificate source for Node fetch, live pairing, authenticated reads, and live control. The dry-run API uses an in-memory token store explicitly; production pairing is designed to use the macOS Keychain adapter.
+**Not implemented:** A live peer-certificate source for Node fetch and live control. The dry-run API uses an in-memory token store explicitly; production pairing uses the macOS Keychain adapter boundary.
 
-**Approval requested:** Review the offline implementation and explicitly approve the first live pairing attempt. That approval must identify the selected device and confirm that the TV may display a pairing PIN. Control requests remain separately gated.
+**Approval requested:** Explicit approval is still required before any volume, mute, input, power, playback, or settings command.
 
 ### Live pairing-start checkpoint
 
-**Status:** Pairing challenge started — PIN completion still gated
+**Status:** Complete — manual pairing succeeded
 
 **Observed:** On 2026-10-19, after the user's explicit request, B-List sent one `PUT /pairing/start` request to the selected VIZIO target. The response was HTTP 200 with `STATUS.RESULT: SUCCESS` and `CHALLENGE_TYPE: 1`. The transient pairing request token was redacted and not persisted.
 
-**Remaining:** Read the PIN from the TV display, then separately approve submitting that PIN to `/pairing/pair`. No authenticated control command has been sent.
+**Remaining:** No authenticated control command has been sent. The transient pairing token and auth token were not recorded in the repository or tracker.
 
 ### Manual pairing and Keychain checkpoint
 
-**Status:** Paired manually — authenticated read-only client wired
+**Status:** Complete — authenticated read-only check verified
 
-**Observed:** The user completed pairing manually and verified the device-scoped token exists in macOS Keychain under the B-List service. The token is not recorded in the repository or project tracker.
+**Observed:** The user completed pairing manually, verified the device-scoped token exists in macOS Keychain, and completed one authenticated `GET /state/device/deviceinfo` request. The TV identified itself as model `W4K65M-1030`, cast name `Living Room`, API version `3.7.2-2621.0006`, and firmware version `86.920.9.3-2`. No serial number, device identifier, token, or diagnostic DSN is recorded here.
 
 **Completed:** Added the Keychain-backed authenticated read-only client, an API route protected by prior discovery, and tests proving the token is retrieved from the store and sent only as the `AUTH` header. Control commands remain separately gated.
 
-**Remaining:** Perform the one live device-info read from the user’s normal Terminal session. The Codex shell cannot access the user’s unlocked login Keychain, so it cannot perform that final read itself.
+**Remaining:** Add any desired UI presentation for the authenticated device info. Live control remains separately gated.
 
 ### Phase 4 offline checkpoint
 
