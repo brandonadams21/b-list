@@ -69,6 +69,14 @@
 
 **Remaining:** Add any desired UI presentation for the authenticated device info. Live control remains separately gated.
 
+### First live control checkpoint
+
+**Status:** Volume-up verified — other controls remain gated
+
+**Observed:** On 2026-10-19, after explicit approval, B-List sent one authenticated `PUT /key_command/` request containing exactly one volume-up `KEYPRESS`. The TV returned HTTP 200 with `STATUS.RESULT: SUCCESS`.
+
+**Safety boundary:** No power, input, mute, playback, settings, multi-command, or unapproved control request was sent. Continue requiring explicit approval for each additional live control.
+
 ### Phase 4 offline checkpoint
 
 **Status:** Recommendation boundary complete — provider integration deferred
