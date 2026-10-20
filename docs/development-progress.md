@@ -51,6 +51,14 @@
 
 **Approval requested:** Review the offline implementation and explicitly approve the first live pairing attempt. That approval must identify the selected device and confirm that the TV may display a pairing PIN. Control requests remain separately gated.
 
+### Live pairing-start checkpoint
+
+**Status:** Pairing challenge started — PIN completion still gated
+
+**Observed:** On 2026-10-19, after the user's explicit request, B-List sent one `PUT /pairing/start` request to the selected VIZIO target. The response was HTTP 200 with `STATUS.RESULT: SUCCESS` and `CHALLENGE_TYPE: 1`. The transient pairing request token was redacted and not persisted.
+
+**Remaining:** Read the PIN from the TV display, then separately approve submitting that PIN to `/pairing/pair`. No authenticated control command has been sent.
+
 ### Phase 4 offline checkpoint
 
 **Status:** Recommendation boundary complete — provider integration deferred
